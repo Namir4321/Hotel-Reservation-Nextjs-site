@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
 const bucket = "hotel-booking-images";
-const url = process.env.SUPABASE_URL;
-const key = process.env.SUPABASE_KEY;
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
 const supabase = createClient(url, key);
 

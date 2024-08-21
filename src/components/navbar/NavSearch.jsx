@@ -1,11 +1,10 @@
 "use client";
 import { Input } from "../ui/input";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams,  useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 const NavSearch = () => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const searchParams = useSearchParams(); 
   const { replace } = useRouter();
 
   const [search, setSearch] = useState(
@@ -18,7 +17,7 @@ const NavSearch = () => {
     } else {
       params.delete("search");
     }
-    replace(`${pathname}?${params.toString()}`);
+    replace(`/?${params.toString()}`);
   }, 500);
   return (
     <Input
