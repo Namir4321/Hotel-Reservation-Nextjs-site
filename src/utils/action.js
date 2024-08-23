@@ -20,21 +20,27 @@ export const getAuthUser = async () => {
     where: { email: UserDetails?.email },
   });
   if (!profile) redirect("/signin");
+  if (!profile.firstName) {
+    redirect("/profile/create");
+  }
   return profile;
 };
 
 export const createProfileAction = async (prevState, formData) => {
   try {
-    const UserDetails = getAuthUser();
-    if (!UserDetails) throw new Error("Please login");
+    const session = await auth();
+    if (!session) return null;
+    const UserDetails = session?.user;
+    const profile = await db.profile.findUnique({
+      where: { email: UserDetails?.email },
+    });
+
     const rawData = Object.fromEntries(formData);
-    const validateFields = validateZodSchema(ProfileSchema, rawData);
-    await db.profile.create({
-      data: {
-        email: UserDetails?.email,
-        profileImage: UserDetails?.image ?? "",
-        ...validateFields,
-      },
+    const validateFields = await validateZodSchema(ProfileSchema, rawData);
+
+    await db.profile.update({
+      where: { email: profile.email },
+      data: { ...validateFields },
     });
   } catch (error) {
     console.log(error);
@@ -88,7 +94,6 @@ export const updateProfileImageAction = async (prevState, formData) => {
   const user = await getAuthUser();
   try {
     const image = formData.get("image");
-    console.log(image);
     const validateFields = await validateZodSchema(imageSchema, { image });
     const fullpath = await uploadImage(validateFields.image);
     await db.profile.update({
@@ -102,7 +107,9 @@ export const updateProfileImageAction = async (prevState, formData) => {
     revalidatePath("/profile");
     return { message: "profile image updated successfully" };
   } catch (error) {
-    return { message: error.message };
+    return {
+      message: error.message || "There was an error updating your profile picture.",
+    };
   }
 };
 
@@ -197,8 +204,8 @@ export const toggleFavouriteAction = async ({
   }
 };
 
-export const fetchFavourites=async()=>{
-  const user=await getAuthUser();
+export const fetchFavourites = async () => {
+  const user = await getAuthUser();
   const favourites = await db.favourite.findMany({
     where: {
       profileId: user.id,
@@ -216,17 +223,16 @@ export const fetchFavourites=async()=>{
       },
     },
   });
-  return favourites.map((favourites)=>favourites.property)
-}
+  return favourites.map((favourites) => favourites.property);
+};
 
-
-export const fetchPropertyDetails=(id)=>{
-return db.property.findUnique({
-  where:{
-    id
-  },
-  include:{
-    profile:true,
-  }
-})
-}
+export const fetchPropertyDetails = (id) => {
+  return db.property.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      profile: true,
+    },
+  });
+};

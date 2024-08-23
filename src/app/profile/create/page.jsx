@@ -6,7 +6,7 @@ import { createProfileAction } from "@/utils/action";
 const CreateProfilePage = async () => {
   return (
     <section>
-      <h1 className="text-2xl font-semibold mb-8 capitalize">new user</h1>
+      <h1 className="text-2xl font-semibold mb-8 capitalize">Complete Profile</h1>
       <div className="border p-8 rounded-md ">
         <FormContainer action={createProfileAction}>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -23,13 +23,6 @@ const CreateProfilePage = async () => {
               name="lastName"
               label="Last Name"
               placeholder="Last Name"
-            />
-            <FormInput
-              key="username"
-              type="text"
-              name="username"
-              label="username"
-              placeholder="username"
             />
           </div>
           <SubmitButton text="Create Profile" btnSize="lg" className="mt-8" />

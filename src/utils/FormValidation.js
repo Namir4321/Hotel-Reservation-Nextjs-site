@@ -8,7 +8,7 @@ export const ProfileSchema = z.object({
     .min(2, { message: "lastname must be atleast 2 character" }),
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
-  }),
+  }).optional(),
 });
 
 export const validateZodSchema = async (Schema, data) => {
@@ -16,8 +16,8 @@ export const validateZodSchema = async (Schema, data) => {
 
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-   console.log(errors)
-    return {message:errors.join(", ")}
+   console.log(errors.map((item)=>item))
+       throw new Error(errors.join(", "));
     // return {message:error}
   }
   return validateResult.data;

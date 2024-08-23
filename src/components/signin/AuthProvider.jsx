@@ -13,7 +13,7 @@ const AuthProvider = () => {
           size="lg"
           className="gap-4 group flex justify-start w-full"
         >
-          <FcGoogle className="w-5 h-5" /> Continue with Github
+          <FcGoogle className="w-5 h-5" /> Continue with Google
           <ArrowRight className="text-sm w-4 h-4 hidden group-hover:block hover:bg-transparent" />
         </Button>
       </form>
