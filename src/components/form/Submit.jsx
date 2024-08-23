@@ -43,7 +43,7 @@ export const CardSigninButton = async () => {
   );
 };
 
-export const CardSubmitButton = async ({isFavourite}) => {
+export const CardSubmitButton =  ({isFavourite}) => {
   const { pending } = useFormStatus();
   return (
     <Button

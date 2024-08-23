@@ -1,6 +1,6 @@
 import { fetchProperties } from "@/utils/action";
-import PropertiesList from "./PropertiesList";
-import EmptyList from "./EmptyList";
+import PropertiesList from "@/components/home/PropertiesList";
+import EmptyList from "@/components/home/EmptyList";
 
 const PropertiesContainer = async({category,search}) => {
 const properties = await fetchProperties({ category, search });
