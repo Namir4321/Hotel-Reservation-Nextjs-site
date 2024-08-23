@@ -14,7 +14,7 @@ import { uploadImage } from "@/utils/supabase";
 
 export const getAuthUser = async () => {
   const session = await auth();
-  if (!session) redirect("/signin");
+  if (!session) return null;
   const UserDetails = session?.user;
   const profile = await db.profile.findUnique({
     where: { email: UserDetails?.email },
