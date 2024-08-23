@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import CountryFlagAndName from "./CountryFlag";
-import PropertyRating from "./PropertyRating";
-import FavouriteToggleButton from "./FavouriteToggleButton";
+import PropertyRating from "@/components/card/PropertyRating";
+import FavouriteToggleButton from "@/components/card/FavouriteToggleButton";
 import formatCurrency from "@/utils/format";
-import CountryFlag from "./CountryFlag";
+import CountryFlag from "@/components/card/CountryFlag";
 const PropertyCard = ({ property }) => {
   const { name, image, price } = property;
   const { country, id: propertyId, tagline } = property;
