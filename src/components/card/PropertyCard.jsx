@@ -4,7 +4,6 @@ import CountryFlag from "@/components/card/CountryFlag";
 import PropertyRating from "@/components/card/PropertyRating";
 import FavouriteToggleButton from "@/components/card/FavouriteToggleButton";
 import formatCurrency from "@/utils/format";
-import CountryFlag from "@/components/card/CountryFlag";
 const PropertyCard = ({ property }) => {
   const { name, image, price } = property;
   const { country, id: propertyId, tagline } = property;
