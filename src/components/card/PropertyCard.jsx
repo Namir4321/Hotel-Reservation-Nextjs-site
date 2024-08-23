@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import CountryFlagAndName from "@/components/card/CountryFlag";
+import CountryFlag from "@/components/card/CountryFlag";
 import PropertyRating from "@/components/card/PropertyRating";
 import FavouriteToggleButton from "@/components/card/FavouriteToggleButton";
 import formatCurrency from "@/utils/format";
