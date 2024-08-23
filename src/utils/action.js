@@ -13,7 +13,17 @@ import { Select } from "@radix-ui/react-select";
 import { uploadImage } from "@/utils/supabase";
 
 export const getAuthUser = async () => {
- 
+  const session = await auth();
+  if (!session) return null;
+  const UserDetails = session?.user;
+  const profile = await db.profile.findUnique({
+    where: { email: UserDetails?.email },
+  });
+  if (!profile) redirect("/signin");
+  if (!profile.firstName) {
+    redirect("/profile/create");
+  }
+  return profile;
 };
 
 export const createProfileAction = async (prevState, formData) => {
