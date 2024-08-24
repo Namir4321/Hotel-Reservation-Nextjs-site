@@ -39,7 +39,7 @@ const PropertyCard = ({ property }) => {
         </div>
       </Link>
       <div className="absolute top-5 right-5 z-5">
-        <FavouriteToggleButton propertyId={propertyId}/>
+        {/* <FavouriteToggleButton propertyId={propertyId}/> */}
       </div>
     </article>
   );

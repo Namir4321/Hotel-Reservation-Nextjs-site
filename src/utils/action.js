@@ -15,10 +15,10 @@ import { uploadImage } from "@/utils/supabase";
 export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
-  const UserDetails = session.user;
+  const UserId = session.user.id;
 
   const profile = await db.profile.findUnique({
-    where: { email: UserDetails.email },
+    where: { id: UserId },
   });
   if (!profile) redirect("/signin");
   if (!profile.firstName) {
@@ -33,7 +33,7 @@ export const createProfileAction = async (prevState, formData) => {
     const user = await getAuthUser();
     if (!user) return null;
     const profile = await db.profile.findUnique({
-      where: { id:user.id },
+      where: { id: user.id },
     });
 
     const rawData = Object.fromEntries(formData);
@@ -53,12 +53,11 @@ export const createProfileAction = async (prevState, formData) => {
 };
 
 export const getProfileImage = async () => {
-  
-  const user=await getAuthUser();
+  const user = await getAuthUser();
   if (!user) return null;
   const profile = await db.profile.findUnique({
     where: {
-      id:user.id,
+      id: user.id,
     },
     select: {
       profileImage: true,
@@ -68,8 +67,9 @@ export const getProfileImage = async () => {
 };
 export const getProfile = async () => {
   const user = await getAuthUser();
+  if(!user) return null
   const profile = await db.profile.findUnique({
-    where: { id:user.id },
+    where: { id: user.id },
   });
   if (!profile) redirect("/profile/create");
   return profile;
