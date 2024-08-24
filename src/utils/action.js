@@ -17,7 +17,7 @@ export const getAuthUser = async () => {
   if (!session) return null;
   const UserId = session.user.id;
   const profile = await db.profile.findUnique({
-    where: { id: user },
+    where: { id: userId },
   });
   if(!profile.firstName) redirect("/profile/create") 
   return UserId;
