@@ -16,10 +16,7 @@ export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserId = session.user.id;
-  const profile = await db.profile.findUnique({
-    where: { id: UserId },
-  });
-  if(!profile.firstName) redirect("/profile/create") 
+  
   return UserId;
 };
 
@@ -39,7 +36,7 @@ export const createProfileAction = async (prevState, formData) => {
       data: { ...validateFields },
     });
   } catch (error) {
-    // console.log(error);
+   
     return {
       message: error.message || "There was an error updating your profile.",
     };
