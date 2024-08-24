@@ -140,6 +140,7 @@ export const createProperyAction = async (prevState, formData) => {
 };
 
 export const fetchProperties = async ({ search = "", category }) => {
+  console.log("trigged")
   const properties = await db.property.findMany({
     where: {
       category,
