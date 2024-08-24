@@ -8,27 +8,28 @@ export const {
   signOut,
   auth,
 } = NextAuth({
+  
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      const existingUser = await db.profile.findUnique({
-        where: { email: user?.email },
-      });
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   const existingUser = await db.profile.findUnique({
+      //     where: { email: user?.email },
+    //   });
 
-      if (!existingUser) {
-        await db.profile.create({
-          data: {
-            email: user.email,
-            username: user.name,
-            profileImage: user.image,
-            password: "123456789",
-          },
-        });
-      }
-
-      return true;
-    },
-    async session({ token, session }) {
+    //   if (!existingUser) {
+      //     await db.profile.create({
+        //       data: {
+          //         email: user.email,
+          //         username: user.name,
+          //         profileImage: user.image,
+          //         password: "123456789",
+          //       },
+          //     });
+    //   }
     
+    //   return true;
+    // },
+    adapter: PrismaAdapter(db),
+    async session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -38,7 +39,6 @@ export const {
       return token;
     },
   },
-  // adapter:PrismaAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,
 });
