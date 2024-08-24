@@ -16,17 +16,7 @@ export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserId = session.user.id;
-  // console.log(UserId)
   return UserId;
-  // const profile = await db.profile.findUnique({
-  //   where: { id: UserId },
-  // });
-  // if (!profile) redirect("/signin");
-  // if (!profile.firstName) {
-  //   redirect("/profile/create");
-  // }
-
-  // return profile;
 };
 
 export const createProfileAction = async (prevState, formData) => {
@@ -45,7 +35,7 @@ export const createProfileAction = async (prevState, formData) => {
       data: { ...validateFields },
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return {
       message: error.message || "There was an error updating your profile.",
     };
@@ -56,6 +46,7 @@ export const createProfileAction = async (prevState, formData) => {
 export const getProfileImage = async () => {
   const user = await getAuthUser();
   if (!user) return null;
+  console.log(user)
   const profile = await db.profile.findUnique({
     where: {
       id: user,
@@ -70,7 +61,7 @@ export const getProfile = async () => {
   const user = await getAuthUser();
   if (!user) return null;
   const profile = await db.profile.findUnique({
-    where: { id: user},
+    where: { id: user },
   });
   if (!profile) redirect("/profile/create");
   return profile;
@@ -81,7 +72,7 @@ export const updateProfileAction = async (prevState, formData) => {
     const rawData = Object.fromEntries(formData);
     const validateFields = await validateZodSchema(ProfileSchema, rawData);
     await db.profile.update({
-      where: { email: user.email},
+      where: { email: user.email },
       data: validateFields,
     });
     revalidatePath("/profile ");
@@ -121,7 +112,7 @@ export const createProperyAction = async (prevState, formData) => {
   const UserId = user.id;
   try {
     const rawData = Object.fromEntries(formData);
-    console.log(rawData);
+    
     const image = formData.get("image");
     const validateFields = await validateZodSchema(propertySchema, rawData);
     const validateFile = await validateZodSchema(imageSchema, { image });
@@ -164,25 +155,27 @@ export const fetchProperties = async ({ search = "", category }) => {
   return properties;
 };
 export const fetchFavouriteId = async ({ propertyId }) => {
-  
+  // console.log(propertyId)
   const user = await getAuthUser();
-  const favorite = await db.favourite.findFirst({
-    where: {
-      propertyId,
-      profileId: user,
-    },
-    select: {
-      id: true,
-    },
-  });
-  return favorite?.id || null;
+  try {
+    const favorite = await db.favourite.findFirst({
+      where: {
+        propertyId,
+        profileId: user,
+      },
+      select: {
+        id: true,
+      },
+    });
+    return favorite.id || null;
+  } catch (err) {}
 };
 export const toggleFavouriteAction = async ({
   propertyId,
   favouriteId,
   pathname,
 }) => {
-  console.log(propertyId, favouriteId, pathname);
+  // console.log(propertyId)
   const user = await getAuthUser();
   try {
     if (favouriteId) {

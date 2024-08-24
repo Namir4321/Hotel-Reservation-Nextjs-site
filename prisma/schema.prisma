@@ -12,14 +12,13 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  
 }
 
 model Profile {
   id           String      @id @default(uuid())
   firstName    String?
   lastName     String?
-  username     String?
+  username     String?     @unique
   email        String      @unique
   profileImage String?
   password     String?

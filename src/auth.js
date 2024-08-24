@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./authConfig";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import {PrismaAdapter} from "@auth/prisma-adapter"
 import db from "@/utils/db";
 export const {
   handlers: { GET, POST },
@@ -33,14 +33,15 @@ export const {
       }
       return session;
     },
-    async jwt({ token }) {
-      const existingUser = await db.profile.findUnique({
-        where: { email: token.email },
-      });
-      if (existingUser) {
-        token.sub = existingUser.id;
+    async jwt({ token, user }) {
+      if (user) {
+        const existingUser = await db.profile.findUnique({
+          where: { email: user.email },
+        });
+        if (existingUser) {
+          token.sub = existingUser.id;
+        }
       }
-
       return token;
     },
   },

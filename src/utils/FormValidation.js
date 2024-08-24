@@ -16,7 +16,7 @@ export const validateZodSchema = async (Schema, data) => {
 
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-   console.log(errors.map((item)=>item))
+  //  console.log(errors.map((item)=>item))
        throw new Error(errors.join(", "));
     // return {message:error}
   }
