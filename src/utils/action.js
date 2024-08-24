@@ -1,5 +1,5 @@
 "use server";
-import db from "./db";
+import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -74,7 +74,7 @@ export const getProfile = async () => {
   return profile;
 };
 export const updateProfileAction = async (prevState, formData) => {
-  const email = await getAuthUser();
+  const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
     const validateFields = await validateZodSchema(ProfileSchema, rawData);

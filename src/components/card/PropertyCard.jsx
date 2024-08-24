@@ -7,6 +7,7 @@ import formatCurrency from "@/utils/format";
 const PropertyCard = ({ property }) => {
   const { name, image, price } = property;
   const { country, id: propertyId, tagline } = property;
+  console.log(property)
   return (
     <article className="group relative">
       <Link href={`/properties/${propertyId}`}>

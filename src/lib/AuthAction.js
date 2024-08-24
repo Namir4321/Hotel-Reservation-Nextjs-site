@@ -1,6 +1,5 @@
 "use server";
 import { signIn, signOut } from "@/auth";
-import { createProfileAction } from "@/utils/action";
 export const handleGithubLogin = async () => {
   await signIn("github");
 
