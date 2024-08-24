@@ -195,7 +195,7 @@ export const toggleFavouriteAction = async ({
       await db.favourite.create({
         data: {
           propertyId,
-          profileId: user.id,
+          profileId: user,
         },
       });
     }
@@ -212,7 +212,7 @@ export const fetchFavourites = async () => {
   const user = await getAuthUser();
   const favourites = await db.favourite.findMany({
     where: {
-      profileId: user.id,
+      profileId: user,
     },
     select: {
       property: {
