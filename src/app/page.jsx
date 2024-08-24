@@ -10,12 +10,12 @@ const HomePage = ({ searchParams }) => {
   return (
     <section>
       <CategoriesList
-        category={searchParams?.category}
+        category={searchParams.category}
         search={searchParams.search}
       />
       <Suspense fallback={<LoadingCard/>}>
       <PropertiesContainer
-        category={searchParams?.category}
+        category={searchParams.category}
         search={searchParams.search}
         />
         </Suspense>
