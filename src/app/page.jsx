@@ -5,17 +5,17 @@ import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 const HomePage = ({ searchParams }) => {
   console.log(searchParams?.category);
-  console.log(searchParams.search);
+  console.log(searchParams?.search);
   return (
     <section>
       <CategoriesList
-        category={searchParams.category}
-        search={searchParams.search}
+        category={searchParams?.category}
+        search={searchParams?.search}
       />
       <Suspense fallback={<LoadingCard/>}>
       <PropertiesContainer
-        category={searchParams.category}
-        search={searchParams.search}
+        category={searchParams?.category}
+        search={searchParams?.search}
         />
         </Suspense>
     </section>
