@@ -4,7 +4,6 @@ import EmptyList from "@/components/home/EmptyList";
 
 const PropertiesContainer = async({category,search}) => {
 const properties = await fetchProperties({ category, search });
-console.log(properties)
 if(properties.length===0){
       return (
         <EmptyList

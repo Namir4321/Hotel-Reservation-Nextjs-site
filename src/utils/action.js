@@ -16,25 +16,24 @@ export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserDetails = session.user;
-  console.log(UserDetails)
+
   const profile = await db.profile.findUnique({
-    where: { email: UserDetails?.email },
+    where: { email: UserDetails.email },
   });
   if (!profile) redirect("/signin");
   if (!profile.firstName) {
     redirect("/profile/create");
   }
-  console.log(profile)
+
   return profile;
 };
 
 export const createProfileAction = async (prevState, formData) => {
   try {
-    const session = await auth();
-    if (!session) return null;
-    const UserDetails = session?.user;
+    const user = await getAuthUser();
+    if (!user) return null;
     const profile = await db.profile.findUnique({
-      where: { email: UserDetails?.email },
+      where: { id:user.id },
     });
 
     const rawData = Object.fromEntries(formData);
@@ -54,12 +53,12 @@ export const createProfileAction = async (prevState, formData) => {
 };
 
 export const getProfileImage = async () => {
-  const session = await auth();
-  const email = session?.user.email;
-  if (!email) return null;
+  
+  const user=await getAuthUser();
+  if (!user) return null;
   const profile = await db.profile.findUnique({
     where: {
-      email,
+      id:user.id,
     },
     select: {
       profileImage: true,
@@ -70,7 +69,7 @@ export const getProfileImage = async () => {
 export const getProfile = async () => {
   const user = await getAuthUser();
   const profile = await db.profile.findUnique({
-    where: { email: user.email },
+    where: { id:user.id },
   });
   if (!profile) redirect("/profile/create");
   return profile;
@@ -110,7 +109,8 @@ export const updateProfileImageAction = async (prevState, formData) => {
     return { message: "profile image updated successfully" };
   } catch (error) {
     return {
-      message: error.message || "There was an error updating your profile picture.",
+      message:
+        error.message || "There was an error updating your profile picture.",
     };
   }
 };
@@ -140,7 +140,6 @@ export const createProperyAction = async (prevState, formData) => {
 };
 
 export const fetchProperties = async ({ search = "", category }) => {
-  console.log("trigged")
   const properties = await db.property.findMany({
     where: {
       category,

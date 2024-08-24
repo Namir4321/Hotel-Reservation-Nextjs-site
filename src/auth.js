@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./authConfig";
+import {PrismaAdapter} from "@auth/prisma-adapter"
 import db from "@/utils/db";
 export const {
   handlers: { GET, POST },
@@ -27,6 +28,7 @@ export const {
       return true;
     },
     async session({ token, session }) {
+    
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -36,6 +38,7 @@ export const {
       return token;
     },
   },
+  // adapter:PrismaAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,
 });

@@ -4,8 +4,7 @@ import PropertiesContainer from "@/components/home/PropertiesContainer";
 import { Suspense } from "react";
 import LoadingCard from "@/components/card/LoadingCard";
 const HomePage = ({ searchParams }) => {
-  console.log(searchParams?.category);
-  console.log(searchParams?.search);
+ 
   return (
     <section>
       <CategoriesList
