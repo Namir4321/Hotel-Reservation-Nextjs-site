@@ -3,10 +3,11 @@ import { CardSigninButton } from "../form/Submit";
 import FavouriteToogleForm from "./FavouriteToogleForm";
 
 const FavouriteToggleButton = async ({ propertyId }) => {
-  // const userId = await getAuthUser();
-  // if(!userId) return <CardSigninButton />
-  // const favouriteId=await fetchFavouriteId({propertyId})
-  // return <FavouriteToogleForm favouriteId={favouriteId} propertyId={propertyId}/>
+  const user=await getAuthUser();
+ 
+  if(!user) return <CardSigninButton />
+  const favouriteId=await fetchFavouriteId({propertyId})
+  return <FavouriteToogleForm favouriteId={favouriteId} propertyId={propertyId}/>
 };
 
 export default FavouriteToggleButton;

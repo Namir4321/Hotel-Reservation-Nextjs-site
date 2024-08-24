@@ -16,16 +16,17 @@ export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserId = session.user.id;
+  // console.log(UserId)
+  return UserId;
+  // const profile = await db.profile.findUnique({
+  //   where: { id: UserId },
+  // });
+  // if (!profile) redirect("/signin");
+  // if (!profile.firstName) {
+  //   redirect("/profile/create");
+  // }
 
-  const profile = await db.profile.findUnique({
-    where: { id: UserId },
-  });
-  if (!profile) redirect("/signin");
-  if (!profile.firstName) {
-    redirect("/profile/create");
-  }
-
-  return profile;
+  // return profile;
 };
 
 export const createProfileAction = async (prevState, formData) => {
@@ -33,7 +34,7 @@ export const createProfileAction = async (prevState, formData) => {
     const user = await getAuthUser();
     if (!user) return null;
     const profile = await db.profile.findUnique({
-      where: { id: user.id },
+      where: { id: user },
     });
 
     const rawData = Object.fromEntries(formData);
@@ -57,7 +58,7 @@ export const getProfileImage = async () => {
   if (!user) return null;
   const profile = await db.profile.findUnique({
     where: {
-      id: user.id,
+      id: user,
     },
     select: {
       profileImage: true,
@@ -67,9 +68,9 @@ export const getProfileImage = async () => {
 };
 export const getProfile = async () => {
   const user = await getAuthUser();
-  if(!user) return null
+  if (!user) return null;
   const profile = await db.profile.findUnique({
-    where: { id: user.id },
+    where: { id: user},
   });
   if (!profile) redirect("/profile/create");
   return profile;
@@ -80,7 +81,7 @@ export const updateProfileAction = async (prevState, formData) => {
     const rawData = Object.fromEntries(formData);
     const validateFields = await validateZodSchema(ProfileSchema, rawData);
     await db.profile.update({
-      where: { email: user.email },
+      where: { email: user.email},
       data: validateFields,
     });
     revalidatePath("/profile ");
@@ -163,17 +164,18 @@ export const fetchProperties = async ({ search = "", category }) => {
   return properties;
 };
 export const fetchFavouriteId = async ({ propertyId }) => {
+  
   const user = await getAuthUser();
-  const favourite = await db.favourite.findFirst({
+  const favorite = await db.favourite.findFirst({
     where: {
       propertyId,
-      profileId: user.id,
+      profileId: user,
     },
     select: {
       id: true,
     },
   });
-  return favourite?.id || null;
+  return favorite?.id || null;
 };
 export const toggleFavouriteAction = async ({
   propertyId,
