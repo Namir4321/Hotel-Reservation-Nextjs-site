@@ -16,7 +16,6 @@ export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserId = session.user.id;
-  
   return UserId;
 };
 
@@ -64,7 +63,7 @@ export const getProfile = async () => {
   const profile = await db.profile.findUnique({
     where: { id: user },
   });
-  if (!profile) redirect("/profile/create");
+  if (!profile.firstName) redirect("/profile/create");
   return profile;
 };
 export const updateProfileAction = async (prevState, formData) => {

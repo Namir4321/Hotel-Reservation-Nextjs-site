@@ -25,7 +25,7 @@ const CreateProfilePage = async () => {
               placeholder="Last Name"
             />
           </div>
-          <SubmitButton text="Create Profile" btnSize="lg" className="mt-8" />
+          <SubmitButton text="Complete Profile" btnSize="lg" className="mt-8" />
         </FormContainer>
       </div>
     </section>
