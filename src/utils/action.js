@@ -89,7 +89,7 @@ export const updateProfileImageAction = async (prevState, formData) => {
     const fullpath = await uploadImage(validateFields.image);
     await db.profile.update({
       where: {
-        email: user.email,
+        id:user,
       },
       data: {
         profileImage: fullpath,
