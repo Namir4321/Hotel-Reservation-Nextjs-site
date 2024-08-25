@@ -8,7 +8,7 @@ import {Button} from "@/components/ui/button";
 import { LuShare2 } from "react-icons/lu";
 import { TwitterShareButton,EmailShareButton,FacebookShareButton,InstapaperShareButton,LinkedinShareButton,TwitterIcon,EmailIcon,LinkedinIcon,FacebookIcon,InstapaperIcon } from "react-share";
 const ShareButton = ({propertyId,name}) => {
- const url=process.env.NEXT_PRODUCTION_WEBSITE_URL;
+ const url = process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL;
  const shareLink=`${url}/properties/${propertyId}`
     return (
       <Popover>

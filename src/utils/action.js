@@ -35,7 +35,6 @@ export const createProfileAction = async (prevState, formData) => {
       data: { ...validateFields },
     });
   } catch (error) {
-   
     return {
       message: error.message || "There was an error updating your profile.",
     };
@@ -46,7 +45,6 @@ export const createProfileAction = async (prevState, formData) => {
 export const getProfileImage = async () => {
   const user = await getAuthUser();
   if (!user) return null;
-  console.log(user)
   const profile = await db.profile.findUnique({
     where: {
       id: user,
@@ -112,7 +110,7 @@ export const createProperyAction = async (prevState, formData) => {
   const UserId = user.id;
   try {
     const rawData = Object.fromEntries(formData);
-    
+
     const image = formData.get("image");
     const validateFields = await validateZodSchema(propertySchema, rawData);
     const validateFile = await validateZodSchema(imageSchema, { image });
