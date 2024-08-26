@@ -44,6 +44,27 @@ export const CardSigninButton = async () => {
   );
 };
 
+
+export const ReserveSigninButton = async () => {
+  const router = useRouter();
+
+  const handleBookingLogin = async () => {
+    const user = await getAuthUser();
+    if (!user) router.push("/signin");
+  };
+  return (
+    <Button
+      type="button"
+      size="lg"
+      className="w-full"
+      onClick={handleBookingLogin}
+    >
+      Sign In to Complete Booking
+    </Button>
+  );
+};
+
+
 export const CardSubmitButton = ({ isFavourite }) => {
   const { pending } = useFormStatus();
   return (

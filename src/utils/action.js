@@ -12,6 +12,7 @@ import {
 import { auth } from "@/auth";
 import { Select } from "@radix-ui/react-select";
 import { uploadImage } from "@/utils/supabase";
+import { calculateTotals } from "./CalculateTotals";
 
 export const getAuthUser = async () => {
   const session = await auth();
@@ -229,6 +230,12 @@ export const fetchPropertyDetails = (id) => {
     },
     include: {
       profile: true,
+      bookings: {
+        select: {
+          checkIn: true,
+          checkOut: true,
+        },
+      },
     },
   });
 };
@@ -328,4 +335,41 @@ export const findExistingReview = async ({ userId, propertyId }) => {
       propertyId: propertyId,
     },
   });
+};
+
+export const createBookingAction = async({
+  propertyId,
+  checkIn,
+  checkOut,
+}) => {
+  console.log(propertyId,checkIn,checkOut)
+  const user = await getAuthUser();
+  const property = await db.property.findUnique({
+    where: { id: propertyId },
+    select: { price: true },
+  });
+  if (!property) {
+    return { message: "Property not found" };
+  }
+
+  const { orderTotal, totalNights } = calculateTotals({
+    checkIn,
+    checkOut,
+    price: property.price,
+  });
+  try {
+    const booking = await db.booking.create({
+      data: {
+        checkIn,
+        checkOut,
+        orderTotal,
+        totalNights,
+        profileId: user,
+        propertyId,
+      },
+    });
+  } catch (err) {
+    return { message: err.message };
+  }
+  redirect('/booking')
 };
