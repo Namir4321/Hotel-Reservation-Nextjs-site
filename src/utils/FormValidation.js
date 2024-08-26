@@ -6,9 +6,12 @@ export const ProfileSchema = z.object({
   lastName: z
     .string()
     .min(2, { message: "lastname must be atleast 2 character" }),
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }).optional(),
+  username: z
+    .string()
+    .min(2, {
+      message: "Username must be at least 2 characters.",
+    })
+    .optional(),
 });
 
 export const validateZodSchema = async (Schema, data) => {
@@ -16,9 +19,8 @@ export const validateZodSchema = async (Schema, data) => {
 
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-  //  console.log(errors.map((item)=>item))
-       throw new Error(errors.join(", "));
-    // return {message:error}
+
+    throw new Error(errors.join(", "));
   }
   return validateResult.data;
 };
@@ -83,3 +85,9 @@ export const propertySchema = z.object({
   }),
   amenities: z.string(),
 });
+
+export const ReviewSchema=z.object({
+  propertyId:z.string(),
+  rating:z.coerce.number().int().min(1).max(5),
+  comment:z.string().min(10).max(1000)
+})

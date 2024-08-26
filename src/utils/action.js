@@ -7,6 +7,7 @@ import {
   ProfileSchema,
   propertySchema,
   validateZodSchema,
+  ReviewSchema,
 } from "./FormValidation";
 import { auth } from "@/auth";
 import { Select } from "@radix-ui/react-select";
@@ -89,7 +90,7 @@ export const updateProfileImageAction = async (prevState, formData) => {
     const fullpath = await uploadImage(validateFields.image);
     await db.profile.update({
       where: {
-        id:user,
+        id: user,
       },
       data: {
         profileImage: fullpath,
@@ -228,6 +229,103 @@ export const fetchPropertyDetails = (id) => {
     },
     include: {
       profile: true,
+    },
+  });
+};
+
+export const createReviewAction = async (prevState, formData) => {
+  const user = await getAuthUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validateFields = await validateZodSchema(ReviewSchema, rawData);
+    await db.review.create({
+      data: {
+        ...validateFields,
+        profileId: user,
+      },
+    });
+    revalidatePath(`properties/${validateFields.propertyId}`);
+    return { message: "review submitted successfully" };
+  } catch (err) {
+    console.log(err.message);
+    return { message: err.message };
+  }
+};
+export const fetchPropertyReview = async ({ propertyId }) => {
+  const reviews = await db.review.findMany({
+    where: {
+      propertyId,
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      profile: {
+        select: {
+          firstName: true,
+          profileImage: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  return reviews;
+};
+export const fetchPropertyReviewByUser = async () => {
+  const user = await getAuthUser();
+  const reviews = await db.review.findMany({
+    where: {
+      profileId: user,
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      property: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return reviews;
+};
+export const deleteReviewAction = async ({ reviewId }) => {
+  const user = await getAuthUser();
+  try {
+    await db.review.delete({
+      where: { id: reviewId, profileId: user },
+    });
+    revalidatePath("/review");
+    return { message: "Review deleted successfully" };
+  } catch (err) {
+    return { message: err.message };
+  }
+};
+
+export const fetchPropertyRating = async ({ propertyId }) => {
+  const result = await db.review.groupBy({
+    by: ["propertyId"],
+    _avg: {
+      rating: true,
+    },
+    _count: {
+      rating: true,
+    },
+    where: { propertyId },
+  });
+  return {
+    rating: result[0]?._avg.rating?.toFixed() ?? 0,
+    count: result[0]?._count.rating ?? 0,
+  };
+};
+
+export const findExistingReview = async ({ userId, propertyId }) => {
+  return db.review.findFirst({
+    where: {
+      profileId: userId,
+      propertyId: propertyId,
     },
   });
 };

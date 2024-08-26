@@ -1,4 +1,8 @@
-import { fetchPropertyDetails } from "@/utils/action";
+import {
+  fetchPropertyDetails,
+  findExistingReview,
+  getAuthUser,
+} from "@/utils/action";
 import { redirect } from "next/navigation";
 import ImageContainer from "@/components/properties/ImageContainer";
 import BreadCrumbs from "@/components/properties/BreadCrumbs";
@@ -12,7 +16,11 @@ import { Separator } from "@/components/ui/separator";
 import UserInfo from "@/components/properties/UserInfo";
 import PropertiesAminites from "@/components/properties/PropertiesAminites";
 import dynamic from "next/dynamic";
-import {Skeleton} from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import PropertyReviews from "@/components/reviews/PropertyReviews";
+import { auth } from "@/auth";
+
 const DynamicMap = dynamic(
   () => import("@/components/properties/PropertiesMap"),
   {
@@ -23,11 +31,15 @@ const DynamicMap = dynamic(
 const PropertyDetailsPage = async ({ params }) => {
   const property = await fetchPropertyDetails(params.id);
   if (!property) redirect("/");
-  const { baths, bedrooms, beds, guests } = property;
+  const { id, baths, bedrooms, beds, guests } = property;
   const details = { baths, bedrooms, beds, guests };
   const firstName = property.profile.firstName;
+  const propertyId=property.id;
   const profileImage = property.profile.profileImage;
-
+  const userId = await getAuthUser();
+  const isNotOwner = property.profile.id !== userId;
+  const reviewDoesNotExist =
+    userId && isNotOwner && !(await findExistingReview({ userId, propertyId }));
   return (
     <section>
       <BreadCrumbs name={property.name} />
@@ -51,12 +63,14 @@ const PropertyDetailsPage = async ({ params }) => {
           <Separator className="mt-4" />
           <PropertiesDescription description={property.description} />
           <PropertiesAminites amenities={property.amenities} />
-       <DynamicMap CountryCode={property.country}/>
+          <DynamicMap CountryCode={property.country} />
         </div>
         <div className="lg:col-span-4 flex flex-col items-center">
           <BookingCalander />
         </div>
       </section>
+      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+      <PropertyReviews propertyId={property.id} />
     </section>
   );
 };
