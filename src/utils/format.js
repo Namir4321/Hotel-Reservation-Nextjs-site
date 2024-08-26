@@ -11,5 +11,12 @@ return new Intl.NumberFormat('en-US',{
 export const formatQuantity=(quantity,noun)=>{
     return quantity === 1 ? `${quantity} ${noun}` : `${quantity}${noun}s`
 }
+export const formatDate=(date)=>{
+    return new Intl.DateTimeFormat('en-US',{
+        year:'numeric',
+        month:'long',
+        day:'numeric',
+    }).format(date);
+}
 
 export default formatCurrency

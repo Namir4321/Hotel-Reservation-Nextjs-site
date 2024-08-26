@@ -337,12 +337,12 @@ export const findExistingReview = async ({ userId, propertyId }) => {
   });
 };
 
-export const createBookingAction = async({
+export const createBookingAction = async ({
   propertyId,
   checkIn,
   checkOut,
 }) => {
-  console.log(propertyId,checkIn,checkOut)
+  console.log(propertyId, checkIn, checkOut);
   const user = await getAuthUser();
   const property = await db.property.findUnique({
     where: { id: propertyId },
@@ -371,5 +371,43 @@ export const createBookingAction = async({
   } catch (err) {
     return { message: err.message };
   }
-  redirect('/booking')
+  redirect("/booking");
 };
+export const fetchBookings = async () => {
+  const user = await getAuthUser();
+  const bookings = await db.booking.findMany({
+    where: {
+      profileId: user,
+    },
+    include: {
+      property: {
+        select: {
+          id: true,
+          name: true,
+          country: true,
+        },
+      },
+    },
+    orderBy:{
+      createdAt:'desc',
+    }
+  });
+  return bookings;
+};
+
+export const deleteBookingAction=async({bookingId})=>{
+const user=await getAuthUser();
+try{
+const result=await db.booking.delete({
+  where:{
+    id:bookingId,
+    profileId:user,
+  }
+})
+revalidatePath("/booking")
+return {message:"Booking deleted successfully"}
+}catch(err){
+  console.log(err)
+return {message:err.message}
+}
+}
