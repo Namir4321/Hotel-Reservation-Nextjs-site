@@ -61,7 +61,7 @@ const RentalPage = async () => {
                   <Link href={`/rentals/${propertyId}/edit`}>
                     <IconButton actionType="edit" />
                   </Link>
-                  <DeleteRental propertyId={propertyId}/>
+                  <DeleteRental propertyId={propertyId} />
                 </TableCell>
               </TableRow>
             );
@@ -72,15 +72,14 @@ const RentalPage = async () => {
   );
 };
 
-
-export default RentalPage;
 export const DeleteRental = ({ propertyId }) => {
-  const deleteRental = deletePropertyAction.bind(null, {
+  const DeleteRentalAction = deletePropertyAction.bind(null, {
     propertyId,
   });
   return (
-    <FormContainer action={deleteRental}>
+    <FormContainer action={DeleteRentalAction}>
       <IconButton actionType="delete" />
     </FormContainer>
   );
 };
+export default RentalPage;
