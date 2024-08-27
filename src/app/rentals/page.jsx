@@ -72,7 +72,7 @@ const RentalPage = async () => {
   );
 };
 
-export const DeleteRental = ({ propertyId }) => {
+const DeleteRental = async({ propertyId }) => {
   const DeleteRentalAction = deletePropertyAction.bind(null, {
     propertyId,
   });
@@ -82,4 +82,5 @@ export const DeleteRental = ({ propertyId }) => {
     </FormContainer>
   );
 };
+
 export default RentalPage;
