@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { getAuthUser } from "@/utils/action";
 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { LuTrash2, LuSquare, LuTrash } from "react-icons/lu";
-
-const SubmitButton = ({ className, text, btnSize, variant }) => {
+import {  LuSquare, LuTrash } from "react-icons/lu";
+import { RiEditBoxLine } from "react-icons/ri";
+const SubmitButton = ({ className, text, btnsize, variant }) => {
   const { pending } = useFormStatus();
   return (
     <Button
@@ -17,7 +17,7 @@ const SubmitButton = ({ className, text, btnSize, variant }) => {
       variant={variant || "default"}
       disabled={pending}
       className={`capitalize ${className}`}
-      size={btnSize || "default"}
+      size={btnsize || "default"}
     >
       {pending ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : text}
     </Button>
@@ -90,7 +90,7 @@ export const IconButton = ({ actionType }) => {
   const renderIcon = () => {
     switch (actionType) {
       case "edit":
-        return <LuSquare />;
+        return <RiEditBoxLine />;
       case "delete":
         return <LuTrash />;
       default:

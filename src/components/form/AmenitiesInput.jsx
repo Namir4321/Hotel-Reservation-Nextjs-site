@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
-import { conservativeAmenities} from "../../utils/amenities";
+import { conservativeAmenities } from "../../utils/amenities";
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
 
 const AmenitiesInput = ({ defaultValue }) => {
-  const [selectedAminities, setSelectedAmenities] = useState(defaultValue||conservativeAmenities);
+  const amenitiesWithIcons=defaultValue?.map(({name,selected})=>({
+    name,
+    selected,
+    icon:conservativeAmenities.find((amenity)=>amenity.name===name)?.icon,
+  }))
+  const [selectedAminities, setSelectedAmenities] = useState(
+    amenitiesWithIcons || conservativeAmenities
+  );
+
   const handleChange = (amenities) => {
     setSelectedAmenities((prev) => {
       return prev.map((a) => {

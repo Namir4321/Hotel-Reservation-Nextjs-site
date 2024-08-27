@@ -31,17 +31,17 @@ export const ImageInputContainer = (props) => {
         )}
         <Button
           variant="outline"
-          btnSize="sm"
+          btnsize="sm"
           onClick={() => setUpdateFormVisible((prev) => !prev)}
         >
           {text}
         </Button>
         {isUpdateFormVisible && (
           <div className="max-w-lg mt-4">
-            <FormContainer action={updateProfileImageAction}>
+            <FormContainer action={action}>
              {children}
               <ImageInput />
-              <SubmitButton  btnSize="sm" text={text} />
+              <SubmitButton  btnsize="sm" text={text} />
             </FormContainer>
           </div>
         )}
