@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`);
 import { NextRequest,NextResponse } from "next/server";
 import db from "@/utils/db";
 import { formatDate } from "@/utils/format";
