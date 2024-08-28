@@ -13,12 +13,19 @@ import { auth } from "@/auth";
 import { Select } from "@radix-ui/react-select";
 import { uploadImage } from "@/utils/supabase";
 import { calculateTotals } from "./CalculateTotals";
+import { formatDate } from "./format";
 
 export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
   const UserId = session.user.id;
   return UserId;
+};
+
+export const isAdminUser = async () => {
+  const user = await getAuthUser();
+  if (user !== process.env.ADMIN_USER_ID) redirect("/");
+  return user;
 };
 
 export const createProfileAction = async (prevState, formData) => {
@@ -72,7 +79,7 @@ export const updateProfileAction = async (prevState, formData) => {
     const rawData = Object.fromEntries(formData);
     const validateFields = await validateZodSchema(ProfileSchema, rawData);
     await db.profile.update({
-      where: { id:user },
+      where: { id: user },
       data: validateFields,
     });
     revalidatePath("/profile ");
@@ -342,6 +349,13 @@ export const createBookingAction = async ({
   checkOut,
 }) => {
   const user = await getAuthUser();
+  await db.booking.deleteMany({
+    where: {
+      profileId: user,
+      paymentStatus: false,
+    },
+  });
+  let bookingId = null;
   const property = await db.property.findUnique({
     where: { id: propertyId },
     select: { price: true },
@@ -366,16 +380,18 @@ export const createBookingAction = async ({
         propertyId,
       },
     });
+    bookingId = booking.id;
   } catch (err) {
     return { message: err.message };
   }
-  redirect("/booking");
+  redirect(`/checkout?bookingId=${bookingId}`);
 };
 export const fetchBookings = async () => {
   const user = await getAuthUser();
   const bookings = await db.booking.findMany({
     where: {
       profileId: user,
+      paymentStatus: true,
     },
     include: {
       property: {
@@ -426,13 +442,14 @@ export const fetchRentals = async () => {
       const totalNightsSum = await db.booking.aggregate({
         where: {
           propertyId: rental.id,
+          paymentStatus: true,
         },
         _sum: {
           totalNights: true,
         },
       });
       const orderTotalSum = await db.booking.aggregate({
-        where: { propertyId: rental.id },
+        where: { propertyId: rental.id, paymentStatus: true },
         _sum: {
           orderTotal: true,
         },
@@ -480,7 +497,7 @@ export const updatePropertyAction = async (prevState, formData) => {
 
   try {
     const rawData = Object.fromEntries(formData);
-    const validatedFields =await validateZodSchema(propertySchema, rawData);
+    const validatedFields = await validateZodSchema(propertySchema, rawData);
     await db.property.update({
       where: {
         id: propertyId,
@@ -496,26 +513,121 @@ export const updatePropertyAction = async (prevState, formData) => {
     return { message: err.message };
   }
 };
-export const updatePropertyImageAction = async ( prevState, formData ) => {
+export const updatePropertyImageAction = async (prevState, formData) => {
   const user = await getAuthUser();
 
   const propertyId = formData.get("id");
   try {
-     const image = formData.get("image");
-     const validateFields = await validateZodSchema(imageSchema, { image });
-     const fullpath = await uploadImage(validateFields.image);
-  await db.property.update({
-    where: {
-      id: propertyId,
-      profileId: user,
-    },
-    data: {
-      image: fullpath,
-    },
-  });
- revalidatePath(`/rentals/${propertyId}/edit`);
- return { message: "Update Image Successful" };
+    const image = formData.get("image");
+    const validateFields = await validateZodSchema(imageSchema, { image });
+    const fullpath = await uploadImage(validateFields.image);
+    await db.property.update({
+      where: {
+        id: propertyId,
+        profileId: user,
+      },
+      data: {
+        image: fullpath,
+      },
+    });
+    revalidatePath(`/rentals/${propertyId}/edit`);
+    return { message: "Update Image Successful" };
   } catch (err) {
     return { message: err.message };
   }
+};
+
+export const fetchReservations = async () => {
+  const user = await getAuthUser();
+  const reservation = await db.booking.findMany({
+    where: {
+      paymentStatus: true,
+      property: {
+        profileId: user,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      property: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          country: true,
+        },
+      },
+    },
+  });
+  return reservation;
+};
+export const fetchStatus = async () => {
+  const Admin = await isAdminUser();
+  const usersCount = await db.profile.count();
+  const propertiesCount = await db.property.count();
+  const bookingsCount = await db.booking.count({
+    where: {
+      paymentStatus: true,
+    },
+  });
+
+  return {
+    usersCount,
+    propertiesCount,
+    bookingsCount,
+  };
+};
+
+export const fetchChartsData = async () => {
+  const isAdmin = await isAdminUser();
+  const date = new Date();
+  date.setMonth(date.getMonth() - 6);
+  const sixMinthAgo = date;
+
+  const bookings = await db.booking.findMany({
+    where: {
+      paymentStatus: true,
+      createdAt: {
+        gte: sixMinthAgo,
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  let bookingsPerMonth = bookings.reduce((total, current) => {
+    const date = formatDate(current.createdAt, true);
+    const existingEntry = total.find((entry) => entry.date === date);
+    if (existingEntry) {
+      existingEntry.count += 1;
+    } else {
+      total.push({ date, count: 1 });
+    }
+    return total;
+  }, []);
+  return bookingsPerMonth;
+};
+
+export const fetchReservationStatus = async () => {
+  const user = await getAuthUser();
+  const properties = await db.property.count({
+    where: { profileId: user },
+  });
+  const totals = await db.booking.aggregate({
+    _sum: {
+      orderTotal: true,
+      totalNights: true,
+    },
+    where: {
+      property: {
+        profileId: user,
+      },
+    },
+  });
+  return {
+    properties,
+    nights: totals._sum.totalNights || 0,
+    amount: totals._sum.orderTotal || 0,
+  };
 };

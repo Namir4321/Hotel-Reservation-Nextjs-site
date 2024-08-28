@@ -15,7 +15,8 @@ import SignoutLink from "./SignoutLink";
 import { handleLogout } from "@/lib/AuthAction";
 const LinksDropdown = async () => {
   const session = await auth();
-  const isLoggedIn = session?.user;
+  const isLoggedIn = session?.user?.id;
+  const isAdminUser = isLoggedIn === process.env.ADMIN_USER_ID;
   return (
     <>
     <DropdownMenu>
@@ -29,6 +30,7 @@ const LinksDropdown = async () => {
         {isLoggedIn ? (
           <>
             {NavLink.map((link) => {
+              if(link.label ==='admin' && !isAdminUser) return null
               return (
                 <>
                   <DropdownMenuItem key={link.href}>
