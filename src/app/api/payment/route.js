@@ -6,7 +6,8 @@ import { formatDate } from "@/utils/format";
 
 export const POST=async(req,res)=>{
     const requestHeaders=new Headers(req.headers);
-    const origin=requestHeaders.get("origin");
+    // const origin=requestHeaders.get("origin");
+    const origin = process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL;
     const {bookingId}=await req.json()
     const booking=await db.booking.findUnique({
         where:{id:bookingId},
