@@ -55,8 +55,8 @@ const LinksDropdown = async () => {
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link
-                href="/register"
-                key="/signout"
+                href="/signup"
+                key="/signup"
                 className="capitalize w-full"
               >
                 Register

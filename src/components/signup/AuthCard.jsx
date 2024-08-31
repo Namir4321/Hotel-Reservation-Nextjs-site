@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import RegisterProvider from "@/components/signup/RegisterProvider";
+import Link from "next/link";
 const AuthCard = () => {
   return (
     <div className="flex justify-center items-center">
@@ -20,7 +21,10 @@ const AuthCard = () => {
         </CardContent>
         <CardFooter>
           <p className="text-sm text-muted-foreground">
-            No account?<span className="text-blue-600"> Signup</span>{" "}
+            Have account?
+            <span className="text-blue-600">
+              <Link href="/signin"> Sign in</Link>
+            </span>{" "}
           </p>
         </CardFooter>
       </Card>

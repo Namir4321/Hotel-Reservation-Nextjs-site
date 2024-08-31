@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import AuthProvider from "./AuthProvider";
 import EmailProvider from "./EmailProvider";
+import Link from "next/link";
 
 const AuthCard = () => {
   return (
@@ -18,14 +19,16 @@ const AuthCard = () => {
       </CardHeader>
       <CardContent className="grid gap-4 ">
         <AuthProvider />
-       
       </CardContent>
       <CardContent>
         <EmailProvider />
       </CardContent>
       <CardFooter>
         <p className="text-sm text-muted-foreground">
-          No account?<span className="text-blue-600"> Signup</span>{" "}
+          No account?
+          <span className="text-blue-600">
+            <Link href="/signup"> Sign up</Link>
+          </span>{" "}
         </p>
       </CardFooter>
     </Card>
