@@ -8,13 +8,16 @@ import {
   propertySchema,
   validateZodSchema,
   ReviewSchema,
+  SignImSchema,
+  RegisterSchema,
 } from "./FormValidation";
 import { auth } from "@/auth";
 import { Select } from "@radix-ui/react-select";
 import { uploadImage } from "@/utils/supabase";
 import { calculateTotals } from "./CalculateTotals";
 import { formatDate } from "./format";
-
+import bcryptjs from "bcryptjs";
+import { hash } from "crypto";
 export const getAuthUser = async () => {
   const session = await auth();
   if (!session) return null;
@@ -27,7 +30,36 @@ export const isAdminUser = async () => {
   if (user !== process.env.ADMIN_USER_ID) redirect("/");
   return user;
 };
-
+export const hashPassword = async (password, saltRounds) => {
+  console.log(password);
+  try {
+    const hashedPassword = await bcryptjs.hash(password, saltRounds);
+    return hashedPassword;
+  } catch (err) {
+    return { message: err.message || "Password is not hased" };
+  }
+};
+export const findUserByEmail = async (email, password) => {
+  const user = await db.profile.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) {
+    return { message: "User not found" };
+  }
+  const hashedpassword = await bcryptjs.compare(password, user.password);
+  if (!hashedpassword) {
+    return { message: "Invalid Email and Pasword" };
+  }
+  const {
+    password: _password,
+    createdAt: _createdAt,
+    updatedAt: _updatedAt,
+    ...userdetails
+  } = user;
+  return { userdetails };
+};
 export const createProfileAction = async (prevState, formData) => {
   try {
     const user = await getAuthUser();

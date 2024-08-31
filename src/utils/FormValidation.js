@@ -14,16 +14,56 @@ export const ProfileSchema = z.object({
     .optional(),
 });
 
+export const SignImSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "This field has to be filled." })
+    .email("This is not a valid email."),
+  password: z
+    .string()
+    .min(6, { message: "Password must be six character long." }),
+});
+
+export const RegisterSchema = z.object({
+    firstName: z.string().min(2, {
+      message: "Please enter a valid name",
+    }),
+    lastName: z
+      .string()
+      .min(2, { message: "lastname must be atleast 2 character" }),
+    username: z
+      .string()
+      .min(2, {
+        message: "Please enter a valid username",
+      })
+      .refine((value) => /\d/.test(value), {
+        message: "Username must contain at least one number",
+      }),
+    email: z.string().email({
+      message: "Please enter a valid email address",
+    }),
+    password: z.string().min(6, {
+      message: "Password must be at least 6 characters long",
+    }),
+    ConfirmPassword: z.string().min(6, {
+      message: "Password must be at least 6 characters long",
+    }),
+  })
+  .refine((data) => data.password === data.ConfirmPassword, {
+    message: "Passwords don't match",
+    path: ["ConfirmPassword"],
+  });
+
 export const validateZodSchema = async (Schema, data) => {
   const validateResult = Schema.safeParse(data);
 
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-
-    throw new Error(errors.join(", "));
+    return {messaage:errors.join(", ")}
   }
   return validateResult.data;
 };
+
 
 const validateFile = () => {
   const maxUploadSize = 1024 * 1024 * 3;
@@ -86,8 +126,8 @@ export const propertySchema = z.object({
   amenities: z.string(),
 });
 
-export const ReviewSchema=z.object({
-  propertyId:z.string(),
-  rating:z.coerce.number().int().min(1).max(5),
-  comment:z.string().min(10).max(1000)
-})
+export const ReviewSchema = z.object({
+  propertyId: z.string(),
+  rating: z.coerce.number().int().min(1).max(5),
+  comment: z.string().min(10).max(1000),
+});

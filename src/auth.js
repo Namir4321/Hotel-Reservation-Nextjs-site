@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { authConfig } from "./authConfig";
 import {PrismaAdapter} from "@auth/prisma-adapter"
 import db from "@/utils/db";
+import { hashPassword } from "./utils/action";
 export const {
   handlers: { GET, POST },
   signIn,
@@ -15,12 +16,13 @@ export const {
       });
 
       if (!existingUser) {
+        const hashedPassword=hashPassword("123456789",10)
         await db.profile.create({
           data: {
             email: user.email,
             username: user.name,
             profileImage: user.image,
-            password: "123456789",
+            password: hashedPassword,
           },
         });
       }
