@@ -42,6 +42,7 @@ export const handleCredentialsLogin = async (prevState, formData) => {
       }
     }
   }
+  redirect("/")
 };
 export const handleSignupAction = async (prevState, formData) => {
   const rawData = Object.fromEntries(formData);
