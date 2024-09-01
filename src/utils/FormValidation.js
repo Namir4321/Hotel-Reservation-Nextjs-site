@@ -24,7 +24,8 @@ export const SignImSchema = z.object({
     .min(6, { message: "Password must be six character long." }),
 });
 
-export const RegisterSchema = z.object({
+export const RegisterSchema = z
+  .object({
     firstName: z.string().min(2, {
       message: "Please enter a valid name",
     }),
@@ -45,13 +46,13 @@ export const RegisterSchema = z.object({
     password: z.string().min(6, {
       message: "Password must be at least 6 characters long",
     }),
-    ConfirmPassword: z.string().min(6, {
+    confirmPassword: z.string().min(6, {
       message: "Password must be at least 6 characters long",
     }),
   })
-  .refine((data) => data.password === data.ConfirmPassword, {
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
     message: "Passwords don't match",
-    path: ["ConfirmPassword"],
   });
 
 export const validateZodSchema = async (Schema, data) => {
@@ -59,7 +60,8 @@ export const validateZodSchema = async (Schema, data) => {
 
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-    return {messaage:errors.join(", ")}
+    // return {messaage:errors.join(", ")}
+    throw new Error(errors.join(", "));
   }
   return validateResult.data;
 };

@@ -48,15 +48,13 @@ export const handleSignupAction = async (prevState, formData) => {
     const validatedFields = await validateZodSchema(RegisterSchema, rawData);
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL}api/auth/signup`,
-      validatedFields,
+      rawData
     );
-    // return { message: "Signup successful!", redirect: "/" };
-  } catch (error) {
-    console.log(error);
-    if (error.response && error.response.data && error.response.data.message) {
-      return { message: error.response.data.message };
+    console.log(res.data);
+  } catch (err) {
+    if (err.response && err.response.data) {
+      return { message: err.response.data.message };
     }
-    return { message: "Something went wrong" };
+    return { message: err.message };
   }
-  redirect("/signin");
 };

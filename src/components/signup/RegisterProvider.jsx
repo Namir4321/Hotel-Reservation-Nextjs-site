@@ -14,6 +14,7 @@ const RegisterProvider = () => {
             name="firstName"
             type="text"
             placeholder="First Name"
+            defaultValue="Sameer"
             required
           />
           <FormInput
@@ -21,6 +22,7 @@ const RegisterProvider = () => {
             name="lastName"
             type="text"
             placeholder="Last Name"
+            defaultValue="khan"
             required
           />
           <FormInput
@@ -28,6 +30,7 @@ const RegisterProvider = () => {
             name="email"
             type="email"
             placeholder="Email"
+            defaultValue="test123@gamil.com"
             required
           />
           <FormInput
@@ -35,6 +38,7 @@ const RegisterProvider = () => {
             name="username"
             type="text"
             placeholder="UserName"
+            defaultValue="Sam123"
             required
           />
           <FormInput
@@ -42,13 +46,15 @@ const RegisterProvider = () => {
             name="password"
             type="password"
             placeholder="Password"
+            defaultValue="123456"
             required
           />
           <FormInput
-            id="Confirm-Password"
-            name="ConfirmPassword"
+            id="confirmPassword"
+            name="confirmPassword"
             type="password"
             placeholder="Confirm Password"
+            defaultValue="123456"
             required
           />
         </div>
