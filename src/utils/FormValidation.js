@@ -57,15 +57,13 @@ export const RegisterSchema = z
 
 export const validateZodSchema = async (Schema, data) => {
   const validateResult = Schema.safeParse(data);
-
   if (!validateResult.success) {
     const errors = validateResult.error.errors.map((error) => error.message);
-    // return {messaage:errors.join(", ")}
+    console.log(errors)
     throw new Error(errors.join(", "));
   }
   return validateResult.data;
 };
-
 
 const validateFile = () => {
   const maxUploadSize = 1024 * 1024 * 3;

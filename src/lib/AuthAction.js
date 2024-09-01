@@ -23,8 +23,10 @@ export const handleLogout = async () => {
 
 export const handleCredentialsLogin = async (prevState, formData) => {
   const rawData = Object.fromEntries(formData);
+  console.log(rawData)
   const validatedFields = await validateZodSchema(SignImSchema, rawData);
   const { email, password } = validatedFields;
+ console.log(validatedFields)
   try {
     await signIn("credentials", {
       email,
@@ -39,7 +41,6 @@ export const handleCredentialsLogin = async (prevState, formData) => {
           return { message: "Something went wrong" };
       }
     }
-    throw error;
   }
 };
 export const handleSignupAction = async (prevState, formData) => {
@@ -48,13 +49,13 @@ export const handleSignupAction = async (prevState, formData) => {
     const validatedFields = await validateZodSchema(RegisterSchema, rawData);
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL}api/auth/signup`,
-      rawData
+      validatedFields
     );
-    console.log(res.data);
   } catch (err) {
     if (err.response && err.response.data) {
       return { message: err.response.data.message };
     }
     return { message: err.message };
   }
+  redirect("/signin");
 };
