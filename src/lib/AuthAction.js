@@ -49,7 +49,7 @@ export const handleSignupAction = async (prevState, formData) => {
   try {
     const validatedFields = await validateZodSchema(RegisterSchema, rawData);
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL}api/auth/signup`,
+      `${process.env.NEXT_PUBLIC_PRODUCTION_WEBSITE_URL}/api/auth/signup`,
       validatedFields
     );
   } catch (err) {
