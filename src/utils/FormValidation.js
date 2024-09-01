@@ -21,7 +21,7 @@ export const SignImSchema = z.object({
     .email("This is not a valid email."),
   password: z
     .string()
-    .min(6, { message: "Password must be six character long." }),
+    .min(1, { message: "Password must be six character long." }),
 });
 
 export const RegisterSchema = z
